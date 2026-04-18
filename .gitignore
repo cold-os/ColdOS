@@ -1,10 +1,4 @@
-# ColdOS 防谄媚场景集成框架 - .gitignore
-
-# 未使用的文件
-ceal_rules.yaml
-demo_sycophancy.py
-index.html
-app.py
+# ColdOS - .gitignore
 
 # 虚拟环境
 .venv/
