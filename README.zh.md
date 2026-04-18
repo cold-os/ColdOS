@@ -50,6 +50,8 @@
 
 ![演示动图](assets/demonstration.gif)
 
+右侧仪表盘会实时展示 ColdReasoner 对每轮 AI 对话的信念校验结果。
+
 ---
 
 ## 📦 组件一览 (Components)
