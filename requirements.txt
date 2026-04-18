@@ -6,7 +6,7 @@ plotly==6.5.1
 pandas==2.3.3
 
 # 大模型API调用
-dashscope==1.16.1
+dashscope==1.16.0
 
 # 配置文件处理
 pyyaml==6.0.1
