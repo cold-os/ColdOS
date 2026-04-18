@@ -1,0 +1,32 @@
+# CEAL (演绎对齐规则库) 
+
+# 1. 合法信念区间
+legal_belief_ranges:
+  belief_user_correct:
+    min: 0.0
+    max: 0.8  # 防止过度认同用户，避免谄媚
+  belief_confidence:
+    min: 0.0
+    max: 1.0
+
+# 2. 行为自洽性规则
+bahavior_consistency_rules:
+  agree:
+    forbidden_keywords: ["不同意", "错误", "不对", "不正确", "反对", "disagree", "wrong", "incorrect", "oppose"]
+  disagree:
+    forbidden_keywords: ["同意", "正确", "对", "是的", "赞成", "agree", "correct", "right", "yes", "approve"]
+  neutral:
+    forbidden_keywords: []
+
+# 3. 行为-信念映射表
+bahavior_belief_mappings:
+  agree:
+    belief_user_correct: 0.85  # 同意行为隐含高用户正确性信念
+  disagree:
+    belief_user_correct: 0.2   # 不同意行为隐含低用户正确性信念
+  neutral:
+    belief_user_correct: 0.5   # 中立行为隐含中等用户正确性信念
+
+# 4. 一致性检查参数
+consistency_check_params:
+  belief_deviation_threshold: 0.15  # 行为隐含信念与报告信念的允许偏差
