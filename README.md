@@ -63,9 +63,8 @@ ColdOS is an integration project that assembles the following independent compon
 | **ColdReasoner** | Three-tier consistency verification kernel (Report - Self-Consistency - Behavior-Belief Consistency) | Under code review |
 | **CEAL** | Deductive alignment rulebase, providing legal belief bounds and inconsistency axioms | Experimental prototype |
 | **CAGE** | Token gateway and audit logging, isolating the agent from the external world | Proof-of-Concept |
-| **ColdMirror** | Secure execution sandbox (not fully enabled in this demo) | Proof-of-Concept |
 
-> **Important**: The current integrated prototype is solely for demonstrating the concept of "runtime belief monitoring." All verification logic (e.g., behavioral self-consistency checks) still relies on **simple keyword/regex matching**, is highly prone to false positives or bypass, and falls far short of any formal guarantee.
+> **Important**: The current integrated prototype is solely for demonstrating the concept of "runtime belief monitoring." Verification logic is based on an **axiomatic rulebase** (CEAL-style) for intent symbolization and logical contradiction detection, but remains an early proof-of-concept and **falls far short of any formal guarantee**. Rulebase coverage is limited, and the token/isolation mechanisms are simulated. **Use in any production or safety-critical scenario is strictly prohibited.**
 
 ---
 
@@ -104,7 +103,7 @@ This demo requires calling the Qwen API to generate belief reports and behavior 
     # Install dependencies (Python 3.8+ recommended)
     pip install -r requirements.txt
 
-    # Run the Streamlit-based monitoring dashboard (free chat + real-time heatmaps)
+    # Run the Streamlit-based monitoring dashboard
     streamlit run streamlit_app.py
     ```
 
@@ -114,24 +113,23 @@ Open the local URL in your browser to see a chat interface. As you converse free
 
 ## ⚙️ Limitations & Roadmap
 
-**The current version is extremely rough. Key known limitations include:**
+**The core architecture has been refactored with the CEAL-style approach, but this remains an early proof-of-concept prototype. Key known limitations:**
 
-- **Fragile Verification Logic**: Behavioral self-consistency relies on simple keywords, prone to false positives; behavior-belief consistency is based on fixed numerical mappings and does not yet implement CEAL-style logical contradiction axioms.
-- **No Rigorous Formalization**: The three-tier verification is purely a conceptual demo and lacks any machine-checkable formal proof.
-- **Reliance on LLM Self-Reported Beliefs**: An independent reverse-extraction mechanism for behavior-based belief is not yet introduced.
-- **Unoptimized Performance & Security**: The token mechanism is simulated, lacking real isolation; the code has not undergone a security audit.
+- **No rigorous formal verification**: Although the three-tier verification now uses an axiomatic rulebase, it has not undergone machine-checkable formal proof (e.g., via TLA⁺ or Coq).
+- **Limited rulebase coverage**: The axioms defined in `cold_os_rules.yaml` are sufficient for demo scenarios only and have not been exhaustively validated against large-scale real-world dialogues.
+- **Simulated token and isolation**: The CAGE token gateway and ColdMirror sandbox are conceptual mock-ups and do not provide real permission isolation or cryptographic audit trails.
 
-**Near-term Plan (Continuous Iteration):**
+**Recently Completed (✅ Implemented):**
 
-- [ ] Upgrade ColdReasoner's behavioral self-consistency check to CEAL-style "intent symbolization + axiomatic rulebase."
-- [ ] Introduce logical contradiction axioms for belief-behavior consistency, replacing purely numerical deviation comparison.
-- [ ] Enhance the visualization dashboard to display belief drift trends over multiple conversation turns.
-- [ ] Add adversarial test cases to evaluate the robustness of the verification logic.
+- ✅ Upgraded ColdReasoner's behavioral self-consistency check to a CEAL-style "intent symbolization + axiomatic rulebase."
+- ✅ Introduced logical contradiction axioms for belief-behavior consistency, complementing numerical deviation checks in a dual verification mechanism.
+- ✅ Built a real-time Streamlit visualization dashboard, featuring multi-turn belief drift trends, radar charts, and risk scoring.
 
-**Long-term Vision:**
+**Next Steps (Continuous Iteration):**
 
-- Formally verify the ColdReasoner kernel (e.g., using TLA⁺ or Coq to prove its key safety properties).
-- Integrate with real-world agent frameworks (e.g., LangChain, AutoGPT) as a pluggable runtime safety middleware.
+- [ ] Expand the rulebase and validate its completeness/robustness through adversarial testing and real-world dialogue data.
+- [ ] Develop a lightweight formal model (e.g., in TLA⁺) for key safety properties of the ColdReasoner kernel.
+- [ ] Integrate ColdOS as a pluggable middleware with real agent frameworks such as LangChain for validation.
 
 ---
 
