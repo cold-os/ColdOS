@@ -42,6 +42,8 @@ In mainstream AI agent frameworks, safety monitoring typically focuses on "behav
 
 Through this three-tier verification, ColdOS aims to provide a set of **auditable, quantifiable, and model-claim-independent** runtime safety constraints for agents. This is the core of the "formal operating system" concept: **incorporating an agent's "inner state" and "words/deeds" into a verifiable runtime kernel**.
 
+![演示动图](assets/demonstration.gif)
+
 ---
 
 ## 📦 Components Overview
