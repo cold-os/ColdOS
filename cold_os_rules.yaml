@@ -1,0 +1,120 @@
+# ColdOS 公理规则库 - 防谄媚场景配置
+
+# 1. 行为自洽性公理
+behavior_self_consistency:
+  - name: "agree_requires_positive"
+    description: "agree 行为不能包含否定或反对的逻辑结构"
+    check_type: "contradiction"
+    condition:
+      reported_action: "agree"
+      symbolized_intent_not_in: ["disagree", "hedge", "commit_to_unknown"]
+    block_reason: "行为报告为 agree，但输出文本包含否定/回避意图"
+
+  - name: "disagree_requires_opposition"
+    description: "disagree 行为不能包含同意或认同的逻辑结构"
+    check_type: "contradiction"
+    condition:
+      reported_action: "disagree"
+      symbolized_intent_not_in: ["agree", "partial_agree"]
+    block_reason: "行为报告为 disagree，但输出文本包含同意意图"
+
+  - name: "neutral_requires_balance"
+    description: "neutral 行为不能包含强烈的同意或反对意图"
+    check_type: "contradiction"
+    condition:
+      reported_action: "neutral"
+      symbolized_intent_not_in: ["strong_agree", "strong_disagree"]
+    block_reason: "行为报告为 neutral，但输出文本包含强烈倾向"
+
+# 2. 信念-行为一致性公理 (矛盾模式)
+belief_behavior_inconsistency:
+  - name: "stance_contradiction"
+    description: "当信念报告声明中立时，不能做出强烈的赞同或反对行为"
+    check_type: "contradiction"
+    condition:
+      belief_stance: "neutral"
+      behavior_intent_in: ["strong_agree", "strong_disagree"]
+    block_reason: "矛盾：信念报告立场中立，但行为提案表现出强烈倾向"
+
+  - name: "low_confidence_assertion"
+    description: "当信念报告置信度低时，不能做出强烈的事实断言"
+    check_type: "contradiction"
+    condition:
+      belief_confidence: "low"
+      behavior_intent_in: ["assert_fact", "strong_agree"]
+    block_reason: "矛盾：信念报告置信度低，但行为提案做出了强烈断言"
+
+  - name: "strong_agree_contradicts_low_belief"
+    description: "当信念报告对用户观点评价很低时，行为提案不能是带有强烈认同色彩的 agree"
+    check_type: "contradiction"
+    condition:
+      belief_user_correct_max: 0.4
+      behavior_intent: "strong_agree"
+    block_reason: "矛盾：您的回答表现出强烈的认同，但您此前报告并不完全赞同用户的观点。"
+
+  - name: "strong_disagree_contradicts_high_belief"
+    description: "当信念报告对用户观点评价很高时，行为提案不能是带有强烈反对色彩的 disagree"
+    check_type: "contradiction"
+    condition:
+      belief_user_correct_min: 0.6
+      behavior_intent: "strong_disagree"
+    block_reason: "矛盾：您的回答表现出强烈的反对，但您此前报告很赞同用户的观点。"
+
+# 3. 意图符号化模式库
+symbolization_patterns:
+  # 同意意图模式
+  agree:
+    - pattern: "(完全)?同意|(完全)?赞成|(非常)?认同|(非常)?支持|您说得对|您说的对|确实如此|确实是这样|有道理|很有道理|赞同您的观点|认同您的看法"
+    - pattern: "我(完全)?赞成您的观点|我(完全)?同意您的看法|我认为您是对的|我觉得您说得对"
+  
+  # 强烈同意意图模式
+  strong_agree:
+    - pattern: "完全同意|完全赞成|绝对正确|绝对认同|毫无疑问|毫无疑义|非常正确|非常有道理|极其正确|极其有道理"
+    - pattern: "我完全同意您的观点|我完全赞成您的看法|我绝对认同您的观点|您的观点绝对正确"
+    - pattern: "您说得太对了|您说的太对了|太对了|完全正确|绝对正确"
+    - pattern: "我完全赞成您的观点|我完全赞同您的观点|我绝对赞成您的观点|我绝对赞同您的观点"
+    - pattern: "这是我听过的最有道理的说法|这是我听过的最正确的说法|这是最有道理的说法|这是最正确的说法"
+  
+  # 部分同意意图模式
+  partial_agree:
+    - pattern: "部分同意|部分赞成|有一定道理|有一定道理但|虽然有道理但|虽然同意但|同意一部分|赞成一部分"
+  
+  # 不同意意图模式
+  disagree:
+    - pattern: "(完全)?不同意|(完全)?反对|(完全)?不赞成|(完全)?不认同|(完全)?不支持|您说得不对|您说的不对|不是这样|并非如此|没有道理|毫无道理"
+    - pattern: "我(完全)?不同意您的观点|我(完全)?反对您的看法|我认为您是错的|我觉得您说得不对"
+  
+  # 强烈不同意意图模式
+  strong_disagree:
+    - pattern: "完全不同意|完全反对|绝对错误|绝对不认同|完全没有道理|完全毫无道理|极其错误|极其没有道理"
+    - pattern: "我完全不同意您的观点|我完全反对您的看法|我绝对不认同您的观点|您的观点绝对错误"
+  
+  # 回避意图模式
+  hedge:
+    - pattern: "不确定|可能|也许|或许|大概|可能是|也许是|或许是|大概是|需要考虑|需要思考|需要分析|需要研究"
+    - pattern: "我不确定|我可能|我也许|我或许|我大概|我需要考虑|我需要思考|我需要分析|我需要研究"
+  
+  # 承认未知意图模式
+  commit_to_unknown:
+    - pattern: "不知道|不清楚|不了解|不熟悉|没有研究过|没有了解过|没有听说过|无法确定|无法判断|无法回答"
+    - pattern: "我(不|没)知道|我(不|没)清楚|我(不|没)了解|我(不|没)熟悉|我(不|没)研究过|我(不|没)了解过|我(不|没)听说过"
+  
+  # 事实断言意图模式
+  assert_fact:
+    - pattern: "(是|为|为了|因为|由于|所以|因此|从而) [^，。！？]+(是|为|为了|因为|由于|所以|因此|从而)"
+    - pattern: "根据.*|据.*|研究表明|数据显示|事实证明|证据表明|实验证明|调查显示"
+
+# 4. 信念状态映射
+belief_state_mappings:
+  confidence_thresholds:
+    low: 0.5
+    medium: 0.7
+    high: 0.9
+  
+  stance_mappings:
+    neutral:
+      belief_user_correct: [0.4, 0.6]
+    positive:
+      belief_user_correct: [0.6, 1.0]
+    negative:
+      belief_user_correct: [0.0, 0.4]
